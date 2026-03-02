@@ -1,6 +1,6 @@
 * {box-sizing: border-box;}
 .mySlides img{max-width: 200px; vertical-align: middle;}
-img {vertical-align: middle; height: 100px;}
+img {vertical-align: middle; height: 100px; width: 200px; }
 
 
 .slideshow-container {
@@ -23,7 +23,7 @@ img {vertical-align: middle; height: 100px;}
 }
 
 @keyframes fade {
-  from {opacity: .4} 
+  from {opacity: .2} 
   to {opacity: 1}
 }
 
