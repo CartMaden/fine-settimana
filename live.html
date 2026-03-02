@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Torneo ITS Lazio Digital</title>
+    <link rel="stylesheet" href="./external.css">
+
+</head>
+<body>
+
+<!-- HEADER + NAV -->
+<header>
+    <nav>
+      <img src="./Logo_Laziodigital.png">
+      <a href="./home.html" style="margin-top: 7px;">Home</a>
+      <a href="./calendario.html" style="margin-top: 7px;" >Calendario</a>
+      <a href="./classifiche.html" style="margin-top: 7px;" >Classifica</a>
+      <a href="./news.html" style="margin-top: 7px;" >News</a>
+      <a href="./info.html" style="margin-top: 7px;" >Info</a>
+      <a href="https://forms.gle/XPcyJvAPMGYDH9SW6" style="margin-top: 7px;" >Iscriviti</a>
+      <a href="./live.html" style="margin-top: 7px;">Live</a>    
+    </nav>
+</header>
+
+<div id="twitch-live-container" style="max-width:1200px;margin:0 auto;padding:20px;text-align:center;font-family:Arial, sans-serif;">
+
+  <h2 id="live-title">Prossima Live in arrivo</h2>
+  <div id="countdown" style="font-size:20px;margin-bottom:20px;"></div>
+
+  <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:20px;">
+
+    <!-- PLAYER -->
+    <iframe
+      src="https://player.twitch.tv/?channel=TUO_CANALE&parent=tuodominio.it"
+      height="480"
+      width="800"
+      allowfullscreen>
+    </iframe>
+
+    <!-- CHAT -->
+    <iframe
+      src="https://www.twitch.tv/embed/TUO_CANALE/chat?parent=tuodominio.it"
+      height="480"
+      width="350">
+    </iframe>
+
+  </div>
+</div>
+
+<script>
+// 🔴 INSERISCI DATA LIVE (anno, mese-1, giorno, ora, minuti)
+var liveDate = new Date(2026, 1, 28, 21, 0, 0); // ESEMPIO 28 Febbraio 2026 ore 21:00
+
+var countdownElement = document.getElementById("countdown");
+var titleElement = document.getElementById("live-title");
+
+var timer = setInterval(function() {
+  var now = new Date().getTime();
+  var distance = liveDate - now;
+
+  if (distance < 0) {
+    clearInterval(timer);
+    countdownElement.innerHTML = "Siamo Live!";
+    titleElement.innerHTML = "🔴 Live in corso";
+    return;
+  }
+
+  var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+  var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+  var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+  var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+  countdownElement.innerHTML = 
+    days + "g " + hours + "h " + minutes + "m " + seconds + "s ";
+}, 1000);
+</script>
+
+
+<div> <!-- FOOTER -->
+  <footer>
+    <p>© 2026 Torneo ITS Lazio Digital gaming. Tutti i diritti riservati.</p>
+    <p>Contatti: Ivan He: +39 123 456 7890</p>
+    <p>Emanuele Campus: +39 351 815 2561<p>
+    <p>Email: itstorneoesports@gmail.com</p>
+  </footer>
+</div>
+</body>
+</html>

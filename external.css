@@ -1,0 +1,53 @@
+body { font-family: Arial, sans-serif; margin: 0; padding: 0; }
+header { background: #ffffff; color: #003366; margin-bottom: 10px;margin-top: 10px; }
+nav { display: flex; justify-content: center; gap: 20px; }
+nav a { color: #003366; text-decoration: none; font-size: 18px; }
+section { padding: 40px 20px; }
+.hero { 
+background-image: url('./Sfondo_header.jpg');
+color: #ffffff; text-align: center; padding: 100px; }
+.hero h1 { margin: 0; font-size: 48px; }
+footer { background: #222; color: #fff; text-align: center; padding: 20px; }
+html {scrollbar-gutter: stable;}
+.nav-links{display: flex; gap: 20px;}
+nav img{ max-width: 200px; height: auto;}
+
+@media (max-width: 768px){ 
+        nav{ gap:10px}
+        nav img{ max-width: 90px;}
+        .nav-links{gap: 10px;}
+        nav a{font-size: 8px;}
+        .hero{padding: 60px 20px;}
+        .hero h1{font-size: 28px;}
+        img{max-width: 100%; height: 60px;}
+        footer{font-size: 8px;}
+        }
+
+
+
+body.valorant-theme {
+    background: linear-gradient(135deg, #0f1923, #ff4655);
+    color: white;
+}
+
+body.lol-theme {
+    background: linear-gradient(135deg, #0a1428, #c89b3c);
+    color: white;
+}
+
+body.r6-theme {
+    background: linear-gradient(135deg, #1a1a1a, #f0a500);
+    color: white;
+}
+
+/* Animazione cambio */
+body {
+    transition: all 0.5s ease;
+}
+
+/* Sezione prossima partita */
+#next-match {
+    text-align: center;
+    padding: 40px;
+    font-size: 18px;
+}
