@@ -2,3 +2,5 @@ login + raccomandazione partite(date in base all'esperienza e skill del giocator
 Area Admin (Spettatore)
 Profili giocatore 1/2
 Tabellone (Bracket)
+logo its che resetta la pagina
+collegamento con il sito del its
