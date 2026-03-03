@@ -1,5 +1,5 @@
-/* Sezione contenuto (escludendo hero) */
-section:not(.hero) {
+/* Sezione contenuto */
+.content {
     max-width: 1000px;
     margin: 60px auto;
     padding: 50px;
@@ -9,14 +9,14 @@ section:not(.hero) {
 }
 
 /* Titolo principale */
-section:not(.hero) h1 {
+.content h1 {
     font-size: 34px;
     color: #003366;
     margin-bottom: 10px;
 }
 
 /* Sottotitoli */
-section:not(.hero) h2 {
+.content h2 {
     margin-top: 40px;
     font-size: 22px;
     color: #003366;
@@ -24,7 +24,7 @@ section:not(.hero) h2 {
     padding-bottom: 8px;
 }
 
-section:not(.hero) h2::after {
+.content h2::after {
     content: "";
     width: 60px;
     height: 3px;
@@ -35,26 +35,26 @@ section:not(.hero) h2::after {
 }
 
 /* Titoli h3 */
-section:not(.hero) h3 {
+.content h3 {
     margin-top: 25px;
     color: #333;
 }
 
 /* Paragrafi */
-section:not(.hero) p {
+.content p {
     line-height: 1.8;
     margin-bottom: 20px;
     font-size: 16px;
 }
 
 /* Lista giochi */
-section:not(.hero) ul {
+.content ul {
     list-style: none;
     padding: 0;
     margin-top: 20px;
 }
 
-section:not(.hero) ul li {
+.content ul li {
     background: #f5f7fa;
     margin: 12px 0;
     padding: 15px 20px;
@@ -63,23 +63,18 @@ section:not(.hero) ul li {
     transition: 0.3s ease;
 }
 
-/*section:not(.hero) ul li:hover {
-    background: #e9eef5;
-    transform: translateX(5px);
-}*/
-
 /* Responsive */
 @media (max-width: 768px) {
-    section:not(.hero) {
+    .content {
         margin: 30px 15px;
         padding: 30px 20px;
     }
 
-    section:not(.hero) h1 {
+    .content h1 {
         font-size: 24px;
     }
 
-    section:not(.hero) h2 {
+    .content h2 {
         font-size: 18px;
     }
 }

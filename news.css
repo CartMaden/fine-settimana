@@ -1,3 +1,5 @@
+
+
 .news-container {
     max-width: 1200px;
     margin: auto;
@@ -11,7 +13,7 @@
 
 .news-feature {
     grid-row: span 2;
-
+    position: relative;
     overflow: hidden;
     border-radius: 12px;
 }
@@ -163,6 +165,7 @@
 }
 
 
+
 @media (max-width: 768px) {
     .news-row {
         flex-direction: column;
@@ -185,3 +188,4 @@
         grid-row: span 1;
     }
 }
+

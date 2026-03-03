@@ -1,0 +1,72 @@
+.game-section {
+    padding: 50px 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.game-section h2,
+.game-section table {
+    width: 80%;
+    margin: 0 auto;
+}
+
+.game-section h2 {
+    margin-bottom: 20px;
+    text-align: center; 
+}
+table {
+    border-collapse: collapse;
+    width: 100%;
+    table-layout: fixed;
+}
+th, td {
+    padding: 12px;
+    text-align: center;
+}
+
+tr:nth-child(2) {
+    font-weight: bold;
+}
+
+
+.valorant {
+    background: #111;
+    color: white;
+}
+
+.valorant h2 {
+    color: #ff4655;
+    
+}
+
+.valorant td {
+    background: #2a2a2a;
+}
+
+
+.lol {
+    background: linear-gradient(135deg, #0a0f2c, #1e2a78);
+    color: #f0e6d2;
+}
+
+.lol h2 {
+    color: gold;
+}
+
+.lol td {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+
+.r6 {
+    background: #1c1c1c;
+    color: white;
+}
+
+.r6 h2 {
+    color: orange;
+}
+
+.r6 td {
+    background: #3a3a3a;
+}
