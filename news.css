@@ -11,7 +11,7 @@
 
 .news-feature {
     grid-row: span 2;
-    position: relative;
+
     overflow: hidden;
     border-radius: 12px;
 }

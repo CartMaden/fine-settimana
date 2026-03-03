@@ -71,7 +71,7 @@
 
 .r6 .group {
     background: #2b2b2b;
-    border-left: 6px solid orange;
+    border: 2px solid orange;
 }
 
 .r6 li {
