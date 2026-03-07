@@ -123,6 +123,7 @@ img {vertical-align: middle; height: 100px; width: 150px; }
 }
 .news-card:hover {
     transform: translateX(12px);
+    transition: transform 0.3s ease;
 }
 
 .news-card img {
