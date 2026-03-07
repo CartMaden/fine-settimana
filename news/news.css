@@ -47,7 +47,7 @@ nav a:hover {
     }
     nav a {
         font-size: 14px;   /* adjust to fit smaller screens */
-        line-height: 30px; /* adjust vertical alignment */
+
     }
     header a img {
         height: 30px;
@@ -265,13 +265,32 @@ nav img{ max-width: 150px; height: auto;}
 }
 
 .site-footer {
-    position: relative;
+    position: relative;   
     background: #0f0f0f;
     color: #e0e0e0;
     padding: 40px 20px;
-
 }
 
+
+.footer-right {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    text-align: right;
+}
+
+.footer-right p {
+    margin: 6px 0;
+    font-size: 14px;
+}
+
+.footer-container{
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start; 
+    max-width: 1100px;
+    margin: auto;
+}
 
 .footer-center {
     text-align: center;
@@ -291,18 +310,6 @@ nav img{ max-width: 150px; height: auto;}
 }
 
 
-.footer-right {
-    position: absolute;
-    top: 15px;
-    right: 20px;
-    text-align: right;
-}
-
-.footer-right p {
-    margin: 6px 0;
-    font-size: 14px;
-}
-
 
 .footer-right a {
     color: #e0e0e0;
@@ -311,4 +318,34 @@ nav img{ max-width: 150px; height: auto;}
 
 .footer-right a:hover {
     opacity: 0.8;
+}
+
+
+@media (max-width: 768px){
+
+    .footer-container{
+        flex-direction: column;
+        gap: 15px;
+        text-align: center;
+    }
+
+    .footer-right{
+        position: static;   
+        text-align: center;
+        margin-top: 15px;
+    }
+
+
+
+    .footer-title{
+        font-size: 16px;
+    }
+
+    .footer-copy{
+        font-size: 12px;
+    }
+
+    .footer-right p{
+        font-size: 12px;
+    }
 }
