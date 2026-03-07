@@ -19,3 +19,17 @@ function showSlides() {
     setTimeout(showSlides, 2000);
 }
 
+document.querySelectorAll(".media-container").forEach(container => {
+
+    const video = container.querySelector("video");
+
+    container.addEventListener("mouseenter", () => {
+        video.play();
+    });
+
+    container.addEventListener("mouseleave", () => {
+        video.pause();
+        video.currentTime = 0;
+    });
+
+});
