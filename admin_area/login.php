@@ -62,17 +62,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <a href="../info/info.html">Info</a>
                 <a href="../live/live.html">Live</a>
                 <a href="../iscrizione/iscrizione.html">Iscriviti</a>
+                <button id="darkModeToggle">⏾</button> 
             </nav>
         </header>
     </div>
     <div class="login-box">
-        <h2>Accesso Riservato</h2>
         
         <?php if($errore): ?>
             <div class="errore"><?php echo $errore; ?></div>
         <?php endif; ?>
 
         <form method="POST" action="">
+            <h2>Accesso Riservato</h2>
             <label>Username</label>
             <input type="text" name="username" required>
             
