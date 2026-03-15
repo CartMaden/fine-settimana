@@ -1,8 +1,8 @@
 <?php
-// Credenziali di default per server locali come XAMPP o MAMP
-$host = 'localhost';
+// ✅ Con Docker: host = "db" (nome del servizio nel docker-compose), password = "root"
+$host = 'db';
 $user = 'root';
-$pass = ''; // MAMP su Mac di solito usa 'root' come password
+$pass = 'root';
 
 try {
     // 1. Connessione a MySQL (senza selezionare un database)
@@ -24,7 +24,7 @@ try {
     // 4. Creazione dell'utente Admin (Password crittografata in modo sicuro!)
     $usernameAdmin = 'admin';
     $passwordAdmin = 'admin123'; // La password in chiaro che userai per entrare
-    $passwordHasciata = password_hash($passwordAdmin, PASSWORD_DEFAULT);
+    $passwordHashata = password_hash($passwordAdmin, PASSWORD_DEFAULT);
 
     // Evitiamo di creare duplicati se ricarichi la pagina
     $check = $pdo->prepare("SELECT id FROM admin WHERE username = ?");
@@ -32,7 +32,7 @@ try {
     
     if($check->rowCount() == 0) {
         $insert = $pdo->prepare("INSERT INTO admin (username, password) VALUES (?, ?)");
-        $insert->execute([$usernameAdmin, $passwordHasciata]);
+        $insert->execute([$usernameAdmin, $passwordHashata]);
         echo "✅ Database, tabella e utente amministratore creati con successo!<br>";
         echo "Ora vai alla pagina <a href='login.php'>login.php</a>";
     } else {
