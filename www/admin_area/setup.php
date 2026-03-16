@@ -33,13 +33,29 @@ try {
     if($check->rowCount() == 0) {
         $insert = $pdo->prepare("INSERT INTO admin (username, password) VALUES (?, ?)");
         $insert->execute([$usernameAdmin, $passwordHashata]);
-        echo "✅ Database, tabella e utente amministratore creati con successo!<br>";
-        echo "Ora vai alla pagina <a href='login.php'>login.php</a>";
-    } else {
-        echo "L'utente admin esiste già. Vai al <a href='login.php'>login.php</a>";
     }
+
+    // Reindirizza al login in entrambi i casi
+    header("Location: login.php");
+    exit;
 
 } catch(PDOException $e) {
     die("Errore di connessione: " . $e->getMessage());
 }
 ?>
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="refresh" content="3;url=login.php">
+    <title>Setup</title>
+    <style>
+        body { font-family: sans-serif; display: flex; justify-content: center;
+               align-items: center; height: 100vh; margin: 0; background: #0a0a12; color: #e8e8ff; }
+        p { font-size: 18px; letter-spacing: 1px; opacity: 0.7; }
+    </style>
+</head>
+<body>
+    <p>⏳ Reindirizzamento in corso…</p>
+</body>
+</html>
