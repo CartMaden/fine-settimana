@@ -125,6 +125,19 @@ footer {
     margin-top: 5px;
 }
 
+.footer-left {
+    position: absolute;
+    bottom: 15px;
+    left: 20px;
+    text-align: left;
+}
+
+.footer-left p {
+    margin: 6px 0;
+    font-size: 14px;
+
+}
+
 .footer-right {
     position: absolute;
     top: 15px;
@@ -144,6 +157,10 @@ footer {
 
 .footer-right a:hover {
     opacity: 0.8;
+}
+
+.hidden-link{
+    opacity: 0;
 }
 
 /* ── SCROLLBAR ── */
