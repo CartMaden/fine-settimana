@@ -1,15 +1,13 @@
 /* ============================================================
    matchmaking.js — Bracket a eliminazione diretta basato su MMR
-   Algoritmo: abbinamento greedy ottimale (min divario MMR)
-   Interazione: click su team per dichiararlo vincitore
    ============================================================ */
 
 document.addEventListener("DOMContentLoaded", () => {
 
     /* ── STATE ── */
-    let squadre  = [];
-    let bracket  = null;   // Array di round; ogni round è Array di match {t1, t2, winner}
-    let maxMMR   = 0;
+    let squadre = [];
+    let bracket = null;  // Array di round; ogni round è Array di {t1, t2, winner}
+    let maxMMR  = 0;
 
     /* ── ELEMENTS ── */
     const btnRefresh  = document.getElementById("btnRefresh");
@@ -35,11 +33,9 @@ document.addEventListener("DOMContentLoaded", () => {
     async function loadSquadre() {
         btnRefresh.disabled    = true;
         btnRefresh.textContent = "Caricamento…";
-
         try {
             const res  = await fetch("get_iscrizioni.php?orderby=mmr");
             const json = await res.json();
-
             if (!json.success) throw new Error(json.message);
 
             squadre = json.data;
@@ -47,7 +43,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
             updateStats();
             renderSeeding();
-
             btnGenerate.disabled = squadre.length < 2;
             showToast(`✅ ${squadre.length} squadre caricate`);
 
@@ -56,7 +51,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 bracketArea.innerHTML = emptyState("🔄", "Squadre aggiornate", "Rigenera il bracket per applicare le modifiche.");
                 btnReset.style.display = "none";
             }
-
         } catch (err) {
             showToast("❌ Errore nel caricamento: " + err.message, true);
         } finally {
@@ -77,17 +71,13 @@ document.addEventListener("DOMContentLoaded", () => {
         const n      = squadre.length;
         const size   = n > 0 ? nextPow2(n) : 0;
         const rounds = size > 0 ? Math.log2(size) : 0;
-        const totalMatches = size > 0 ? size - 1 : 0;
-        const avgMMR = n > 0
-            ? Math.round(squadre.reduce((a, s) => a + s.mmr_totale, 0) / n)
-            : 0;
+        const totalM = size > 0 ? size - 1 : 0;
+        const avgMMR = n > 0 ? Math.round(squadre.reduce((a, s) => a + s.mmr_totale, 0) / n) : 0;
 
         document.getElementById("statSquadre").textContent = n || "—";
-        document.getElementById("statPartite").textContent = totalMatches || "—";
-        document.getElementById("statTurni").textContent   = rounds  || "—";
-        document.getElementById("statAvgMMR").textContent  = avgMMR > 0
-            ? avgMMR.toLocaleString("it-IT")
-            : "—";
+        document.getElementById("statPartite").textContent = totalM || "—";
+        document.getElementById("statTurni").textContent   = rounds || "—";
+        document.getElementById("statAvgMMR").textContent  = avgMMR > 0 ? avgMMR.toLocaleString("it-IT") : "—";
     }
 
     /* ── SEEDING TABLE ── */
@@ -95,17 +85,12 @@ document.addEventListener("DOMContentLoaded", () => {
         const section = document.getElementById("seedingSection");
         const tbody   = document.getElementById("seedBody");
 
-        if (!squadre.length) {
-            section.style.display = "none";
-            return;
-        }
-
+        if (!squadre.length) { section.style.display = "none"; return; }
         section.style.display = "block";
 
         tbody.innerHTML = squadre.map((s, i) => {
             const barW = Math.round((s.mmr_totale / maxMMR) * 120);
-            return `
-            <tr>
+            return `<tr>
                 <td><span class="seed-num">${i + 1}</span></td>
                 <td>${esc(s.caposquadra)}</td>
                 <td>${esc(s.corso)}</td>
@@ -121,159 +106,165 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     /* ══════════════════════════════════════════════════════════
-       ALGORITMO DI ABBINAMENTO OTTIMALE (greedy min-diff MMR)
-       ══════════════════════════════════════════════════════════
-       Strategia:
-         1. Ordina le squadre per MMR decrescente (seed 1 = MMR max).
-         2. Riempi con BYE null fino alla prossima potenza di 2.
-         3. Abbina seed 1 vs seed N, seed 2 vs seed N-1, …
-            → minimizza il divario MMR massimo al primo turno e
-              garantisce che le squadre più forti si incontrino
-              il più tardi possibile nel bracket.
+       ALGORITMO DI ABBINAMENTO — minimo divario MMR al primo turno
+
+       Principio:
+         - Ordina per MMR decrescente: [s1, s2, s3 … sN]
+         - I BYE vanno alle squadre con MMR PIÙ ALTO (in testa alla lista)
+           come ricompensa per il ranking migliore
+         - I BYE occupano i primi slot del round 0 (match 0, 1, …)
+           così alimentano il nextMatch 0 del round 1 senza collisioni
+         - Le partite reali (coppie adiacenti) vengono dopo, min divario MMR
+         - Esempio con 6 squadre (size=8, byes=2):
+             slot 0: s1 BYE  ┐→ nextMatch 0 del round 1
+             slot 1: s2 BYE  ┘
+             slot 2: s3 vs s4 ┐→ nextMatch 1 del round 1
+             slot 3: s5 vs s6 ┘
     ══════════════════════════════════════════════════════════ */
     function generateBracket() {
         if (squadre.length < 2) return;
 
         const seeded = [...squadre].sort((a, b) => b.mmr_totale - a.mmr_totale);
         const size   = nextPow2(seeded.length);
+        const byes   = size - seeded.length;
 
-        // Riempi con BYE fino alla dimensione del bracket
-        const padded = [...seeded];
-        while (padded.length < size) padded.push(null);
-
-        // Abbinamento ottimale: seed i vs seed (size-1-i)
-        // es. size=8: 0vs7, 1vs6, 2vs5, 3vs4
         const firstRound = [];
-        for (let i = 0; i < size / 2; i++) {
-            firstRound.push({
-                t1:     padded[i],
-                t2:     padded[size - 1 - i],
-                winner: null
-            });
+        let idx = 0;
+
+        // BYE PRIMA: le squadre con MMR più alto saltano il primo turno
+        // Occupano i primi slot in coppie (slot 0+1, 2+3, …) → ogni coppia
+        // alimenta un singolo nextMatch senza collisioni di indice
+        for (let i = 0; i < byes; i++) {
+            const t1 = seeded[idx++];
+            firstRound.push({ t1, t2: null, winner: t1 });
         }
 
-        // Auto-avanza i BYE del primo turno
-        firstRound.forEach(m => {
-            if (m.t1 !== null && m.t2 === null) m.winner = m.t1;
-            if (m.t1 === null && m.t2 !== null) m.winner = m.t2;
-        });
+        // PARTITE REALI DOPO: coppie adiacenti → divario MMR minimo
+        while (idx < seeded.length) {
+            const t1 = seeded[idx++];
+            const t2 = seeded[idx++] ?? null;
+            if (t2 === null) {
+                // Squadra spaiata (non dovrebbe accadere con nextPow2, ma gestita)
+                firstRound.push({ t1, t2: null, winner: t1 });
+            } else {
+                firstRound.push({ t1, t2, winner: null });
+            }
+        }
 
         // Costruisce i round successivi come slot vuoti
-        bracket = buildEmptyRounds(firstRound, size);
-        propagateByes();
-
-        renderBracket();
-        btnReset.style.display = "";
-        showToast(`✅ Bracket generato — ${bracket.length} turni, ${seeded.length} squadre`);
-    }
-
-    /* ── Crea la struttura di tutti i round (slot null per i turni futuri) ── */
-    function buildEmptyRounds(firstRound, size) {
-        const rounds = [firstRound];
+        bracket = [firstRound];
         let prev = firstRound;
         while (prev.length > 1) {
             const next = [];
             for (let i = 0; i < prev.length; i += 2) {
                 next.push({ t1: null, t2: null, winner: null });
             }
-            rounds.push(next);
+            bracket.push(next);
             prev = next;
         }
-        return rounds;
+
+        // Propaga i BYE del round 0 → round 1
+        advanceAllByes(0);
+
+        renderBracket();
+        btnReset.style.display = "";
+        showToast(`✅ Bracket generato — ${bracket.length} turni, ${seeded.length} squadre`);
     }
 
-    /* ── Propagazione automatica dei BYE attraverso il bracket ── */
-    function propagateByes() {
-        for (let r = 0; r < bracket.length - 1; r++) {
-            const cur  = bracket[r];
-            const next = bracket[r + 1];
-            for (let m = 0; m < cur.length; m++) {
-                const matchWinner = cur[m].winner;
-                const nextMatchIdx = Math.floor(m / 2);
-                const isFirst      = m % 2 === 0;
-                if (matchWinner !== null) {
-                    if (isFirst) next[nextMatchIdx].t1 = matchWinner;
-                    else         next[nextMatchIdx].t2 = matchWinner;
-                }
-            }
-            // Auto-avanza BYE nel round successivo
-            next.forEach(m => {
-                if (m.t1 !== null && m.t2 === null) m.winner = m.t1;
-                if (m.t1 === null && m.t2 !== null) m.winner = m.t2;
-            });
+    /* ══════════════════════════════════════════════════════════
+       AVANZAMENTO VINCITORI — propaga solo il match specificato
+       al proprio slot nel round successivo. Non tocca gli altri.
+    ══════════════════════════════════════════════════════════ */
+    function advanceSingleMatch(roundIdx, matchIdx) {
+        if (roundIdx >= bracket.length - 1) return;
+
+        const w = bracket[roundIdx][matchIdx].winner;
+        if (w === null) return;
+
+        const nextMatchIdx = Math.floor(matchIdx / 2);
+        const isFirst      = matchIdx % 2 === 0;
+        const nextMatch    = bracket[roundIdx + 1][nextMatchIdx];
+
+        if (isFirst) nextMatch.t1 = w;
+        else         nextMatch.t2 = w;
+        // Nessun auto-avanzamento: ogni nextMatch aspetta entrambi gli slot.
+        // I BYE sono già pre-risolti con winner:t1 alla generazione e
+        // propagati da advanceAllByes — non servono ulteriori auto-avanzamenti.
+    }
+
+    /* Propaga tutti i vincitori già noti (BYE pre-risolti) dal round indicato in poi.
+       Usato alla generazione per popolare i round iniziali con i BYE. */
+    function advanceAllByes(roundIdx) {
+        if (roundIdx >= bracket.length - 1) return;
+        const cur  = bracket[roundIdx];
+        const next = bracket[roundIdx + 1];
+
+        for (let m = 0; m < cur.length; m++) {
+            if (cur[m].winner !== null) advanceSingleMatch(roundIdx, m);
         }
+
+        // Risolvi automaticamente i nextMatch che ora hanno un solo partecipante
+        // (succede quando due BYE adiacenti alimentano lo stesso nextMatch)
+        next.forEach(m => {
+            if (m.winner !== null) return;
+            if (m.t1 !== null && m.t2 === null) { m.winner = m.t1; }
+            if (m.t1 === null && m.t2 !== null) { m.winner = m.t2; }
+        });
+
+        // Ricorsione: se nel round successivo ci sono nuovi BYE, propagali ancora
+        advanceAllByes(roundIdx + 1);
     }
 
-    /* ── Dichiara il vincitore di una partita e aggiorna il bracket ── */
+    /* ── Dichiara il vincitore di una partita ── */
     function setWinner(roundIdx, matchIdx, teamSlot) {
         const match = bracket[roundIdx][matchIdx];
+        if (!match.t1 || !match.t2) return;  // non interagibile (BYE o TBD)
 
-        // Impedisce di cambiare vincitore se il round successivo è già avanzato
-        if (roundIdx < bracket.length - 1) {
-            const nextMatchIdx = Math.floor(matchIdx / 2);
-            const nextMatch    = bracket[roundIdx + 1][nextMatchIdx];
-            const isFirst      = matchIdx % 2 === 0;
-            const occupiedSlot = isFirst ? nextMatch.t1 : nextMatch.t2;
+        const newWinner = teamSlot === 1 ? match.t1 : match.t2;
+        if (match.winner === newWinner) return;  // già impostato, nessun cambio
 
-            // Se il round successivo ha già un vincitore per questo slot,
-            // avvisa e non procedere (evita stati invalidi)
-            if (nextMatch.winner !== null) {
-                showToast("⚠️ Il turno successivo è già stato completato. Effettua prima un reset parziale.", true);
-                return;
-            }
+        // Se c'era già un vincitore diverso, pulisci a cascata prima
+        if (match.winner !== null) {
+            cascadeClear(roundIdx, matchIdx);
         }
 
-        // Annulla il precedente vincitore di questa partita nel bracket successivo
-        if (match.winner !== null && roundIdx < bracket.length - 1) {
-            const nextMatchIdx = Math.floor(matchIdx / 2);
-            const isFirst      = matchIdx % 2 === 0;
-            const nextMatch    = bracket[roundIdx + 1][nextMatchIdx];
-            if (isFirst) nextMatch.t1 = null;
-            else         nextMatch.t2 = null;
-            nextMatch.winner = null;
-            // Pulisci a cascata i round successivi
-            clearFromRound(roundIdx + 1, nextMatchIdx);
-        }
+        match.winner = newWinner;
 
-        // Imposta il nuovo vincitore
-        match.winner = teamSlot === 1 ? match.t1 : match.t2;
+        // Avanza solo questo match al round successivo
+        advanceSingleMatch(roundIdx, matchIdx);
 
-        // Propaga
-        propagateByes();
         renderBracket();
-        showToast(`🏆 ${esc(match.winner.caposquadra)} avanza al turno successivo!`);
+        showToast(`🏆 ${esc(newWinner.caposquadra)} avanza al prossimo turno!`);
     }
 
-    /* ── Pulisce a cascata il bracket da un certo round/match ── */
-    function clearFromRound(roundIdx, matchIdx) {
-        if (roundIdx >= bracket.length) return;
-        const match    = bracket[roundIdx][matchIdx];
-        const isFirst  = matchIdx % 2 === 0;
-        const nextIdx  = Math.floor(matchIdx / 2);
+    /* ── Pulisce a cascata dal round successivo a matchIdx in poi ── */
+    function cascadeClear(roundIdx, matchIdx) {
+        if (roundIdx >= bracket.length - 1) return;
 
-        if (roundIdx < bracket.length - 1) {
-            const nextMatch = bracket[roundIdx + 1][nextIdx];
-            if (isFirst) nextMatch.t1 = null;
-            else         nextMatch.t2 = null;
+        const nextMatchIdx = Math.floor(matchIdx / 2);
+        const isFirst      = matchIdx % 2 === 0;
+        const nextMatch    = bracket[roundIdx + 1][nextMatchIdx];
+
+        // Rimuovi il valore propagato nel round successivo
+        if (isFirst) nextMatch.t1 = null;
+        else         nextMatch.t2 = null;
+
+        // Se il round successivo aveva già un vincitore, pulisci oltre
+        if (nextMatch.winner !== null) {
+            cascadeClear(roundIdx + 1, nextMatchIdx);
             nextMatch.winner = null;
-            clearFromRound(roundIdx + 1, nextIdx);
         }
-
-        match.t1     = (matchIdx % 2 === 0) ? match.t1 : null;
-        match.t2     = (matchIdx % 2 === 0) ? null : match.t2;
-        match.winner = null;
     }
 
     /* ══════════════════════════════════════════════════════════
        RENDER BRACKET
     ══════════════════════════════════════════════════════════ */
     function renderBracket() {
-        const rounds      = bracket;
-        const roundNames  = buildRoundNames(rounds.length);
-        const BASE_CARD_H = 105;
-        const BASE_GAP    = 16;
+        const rounds     = bracket;
+        const roundNames = buildRoundNames(rounds.length);
+        const BASE_H     = 105;
+        const BASE_GAP   = 16;
 
-        // Trova il campione (vincitore dell'ultima partita)
         const finalMatch = rounds[rounds.length - 1][0];
         const champion   = finalMatch ? finalMatch.winner : null;
 
@@ -281,7 +272,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         rounds.forEach((matches, rIdx) => {
             const factor = Math.pow(2, rIdx);
-            const slotH  = BASE_CARD_H * factor + BASE_GAP * (factor - 1) + BASE_GAP;
+            const slotH  = BASE_H * factor + BASE_GAP * (factor - 1) + BASE_GAP;
 
             html += `<div class="round-col">`;
             html += `<div class="round-header">${roundNames[rIdx]}</div>`;
@@ -289,48 +280,34 @@ document.addEventListener("DOMContentLoaded", () => {
 
             matches.forEach((match, mIdx) => {
                 const { t1, t2, winner } = match;
-                const isBye   = (t1 !== null && t2 === null) || (t1 === null && t2 !== null);
-                const diff    = t1 && t2 ? Math.abs(t1.mmr_totale - t2.mmr_totale) : null;
-                const isDone  = winner !== null;
-
-                // Determina se i team sono cliccabili (partita giocabile)
+                const isBye  = (t1 !== null && t2 === null) || (t1 === null && t2 !== null);
+                const diff   = t1 && t2 ? Math.abs(t1.mmr_totale - t2.mmr_totale) : null;
+                const isDone = winner !== null;
                 const canVote = t1 !== null && t2 !== null && !isBye;
 
                 html += `<div class="match-wrapper" style="height:${slotH}px">`;
                 html += `<div class="match-card${isDone ? " match-done" : ""}">`;
                 html += `<div class="match-num">Partita ${rIdx + 1}.${mIdx + 1}${isBye ? " — BYE" : ""}</div>`;
-
-                // Team 1
                 html += teamRowHTML(t1, 1, winner, canVote, rIdx, mIdx);
-                // Team 2
-                if (isBye && t1 !== null) {
-                    html += `<div class="team-row"><span class="team-seed">—</span><span class="team-name tbd">— BYE —</span></div>`;
-                } else if (isBye && t2 !== null) {
-                    html += `<div class="team-row"><span class="team-seed">—</span><span class="team-name tbd">— BYE —</span></div>`;
-                    html += teamRowHTML(t2, 2, winner, canVote, rIdx, mIdx);
-                } else {
-                    html += teamRowHTML(t2, 2, winner, canVote, rIdx, mIdx);
-                }
-
+                html += isBye
+                    ? `<div class="team-row"><span class="team-seed">—</span><span class="team-name tbd">— BYE —</span></div>`
+                    : teamRowHTML(t2, 2, winner, canVote, rIdx, mIdx);
                 if (diff !== null) {
                     html += `<div class="match-diff">Δ MMR ${diff.toLocaleString("it-IT")}</div>`;
                 }
-                html += `</div>`; // .match-card
-                html += `</div>`; // .match-wrapper
+                html += `</div></div>`;
             });
 
-            html += `</div></div>`; // .round-matches .round-col
+            html += `</div></div>`;
         });
 
         // Colonna campione
-        const champFactor = Math.pow(2, rounds.length);
-        const champSlotH  = BASE_CARD_H * champFactor + BASE_GAP * (champFactor - 1) + BASE_GAP;
-
-        html += `<div class="round-col">`;
-        html += `<div class="round-header">🏆 Campione</div>`;
-        html += `<div class="round-matches">`;
-        html += `<div class="match-wrapper" style="height:${champSlotH}px">`;
-
+        const cf = Math.pow(2, rounds.length);
+        const cs = BASE_H * cf + BASE_GAP * (cf - 1) + BASE_GAP;
+        html += `<div class="round-col">
+            <div class="round-header">🏆 Campione</div>
+            <div class="round-matches">
+            <div class="match-wrapper" style="height:${cs}px">`;
         if (champion) {
             html += `<div class="champion-box">
                 <div class="trophy">🏆</div>
@@ -345,25 +322,19 @@ document.addEventListener("DOMContentLoaded", () => {
                 <div class="name tbd">Da determinare</div>
             </div>`;
         }
-
-        html += `</div></div></div>`; // wrapper, round-matches, round-col
-        html += `</div>`; // .bracket-container
+        html += `</div></div></div></div>`;
 
         bracketArea.innerHTML = html;
 
-        // Aggiunge event listener ai bottoni vincitore
         bracketArea.querySelectorAll(".vote-btn").forEach(btn => {
             btn.addEventListener("click", (e) => {
                 e.stopPropagation();
-                const rIdx    = parseInt(btn.dataset.round);
-                const mIdx    = parseInt(btn.dataset.match);
-                const slot    = parseInt(btn.dataset.slot);
-                setWinner(rIdx, mIdx, slot);
+                setWinner(+btn.dataset.round, +btn.dataset.match, +btn.dataset.slot);
             });
         });
     }
 
-    /* ── HTML di una riga team con bottone vincitore ── */
+    /* ── HTML di una riga team ── */
     function teamRowHTML(team, slot, winner, canVote, rIdx, mIdx) {
         if (!team) {
             return `<div class="team-row">
@@ -371,24 +342,22 @@ document.addEventListener("DOMContentLoaded", () => {
                 <span class="team-name tbd">TBD</span>
             </div>`;
         }
+        const isWinner = winner !== null && winner === team;
+        const isLoser  = winner !== null && winner !== team;
+        const rowCls   = isWinner ? " winner" : isLoser ? " loser" : "";
 
-        const isWinner  = winner !== null && winner === team;
-        const isLoser   = winner !== null && winner !== team;
-        const rowCls    = isWinner ? " winner" : isLoser ? " loser" : "";
-
-        let voteBtn = "";
+        let badge = "";
         if (canVote && winner === null) {
-            // Bottone per dichiarare vincitore
-            voteBtn = `<button class="vote-btn" data-round="${rIdx}" data-match="${mIdx}" data-slot="${slot}" title="Dichiara vincitore">▶</button>`;
+            badge = `<button class="vote-btn" data-round="${rIdx}" data-match="${mIdx}" data-slot="${slot}" title="Dichiara vincitore">▶</button>`;
         } else if (isWinner) {
-            voteBtn = `<span class="win-badge">✓</span>`;
+            badge = `<span class="win-badge">✓</span>`;
         }
 
         return `<div class="team-row${rowCls}">
             <span class="team-seed">${slot}</span>
             <span class="team-name">${esc(team.caposquadra)}</span>
             <span class="team-mmr">${team.mmr_totale.toLocaleString("it-IT")}</span>
-            ${voteBtn}
+            ${badge}
         </div>`;
     }
 

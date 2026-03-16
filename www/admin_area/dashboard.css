@@ -26,9 +26,16 @@ body::-webkit-scrollbar {
   cursor: pointer;
   width: 500px;
   margin: 0 auto 20px auto;
-  display: block;
+  display: flex;
   justify-content: center;
+  align-items: center;
   border-radius: 5px;
   font-size: large;
   align-items: center;
+}
+.wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
 }
