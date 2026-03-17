@@ -4,7 +4,7 @@
   overflow: hidden;
   text-align: center;
   padding: 120px 40px 110px;
-  background-image: url('../photo/Sfondo_header.jpg');
+  background-image: url('./photo/Sfondo_header.jpg');
 }
 .index-hero::before {
   content: '';
