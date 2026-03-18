@@ -68,6 +68,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <nav>
         <a href="../info/info.html">Info</a>
         <a href="../calendario/calendario.html">Calendario</a>
+        <a href="../classifica/classifica.html">Classifica</a>
         <a href="../news/news.html">News</a>
         <a href="../live/live.html">Live</a>
         <a href="../merchandise/merchandise.php">Shop</a>

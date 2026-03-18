@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calendario — Lazio Digital</title>
+    <title>Classifica — Lazio Digital</title>
     <link rel="shortcut icon" href="../photo/favicon.ico">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../condivisi/headerdarkmode.css">
-    <link rel="stylesheet" href="calendario.css">
+    <link rel="stylesheet" href="classifica.css">
 </head>
 <body>
 
@@ -18,7 +18,7 @@
     <nav>
         <div class="nav-links" id="navLinks">
             <a href="../info/info.html">Info</a>
-            <a href="calendario.html">Calendario</a>
+            <a href="../calendario/calendario.html">Calendario</a>
             <a href="../classifica/classifica.html">Classifica</a>
             <a href="../news/news.html">News</a>
             <a href="../live/live.html">Live</a>
@@ -38,54 +38,21 @@
 </header>
 
 <!-- HERO -->
-<section class="cal-hero">
-    <div class="cal-hero-eyebrow">Torneo ITS Lazio Digital</div>
-    <h1>Calen<span>dario</span></h1>
-    <p>Risultati e scontri del torneo — aggiornati in tempo reale</p>
-    <div class="live-dot" id="liveDot" style="display:none">
-        <span class="dot-pulse"></span> Live
-    </div>
+<section class="cla-hero">
+    <div class="cla-hero-eyebrow">ITS Lazio Digital Gaming</div>
+    <h1>Classi<span>fica</span></h1>
+    <p>Torneo a punti — E-Olimpiadi 2026</p>
 </section>
 
-<!-- STATS BAR -->
-<div class="stats-bar">
-    <div class="stat-item">
-        <div class="stat-value" id="statTotali">—</div>
-        <div class="stat-label">Partite totali</div>
-    </div>
-    <div class="stat-item">
-        <div class="stat-value" id="statGiocate">—</div>
-        <div class="stat-label">Disputate</div>
-    </div>
-    <div class="stat-item">
-        <div class="stat-value" id="statRimanenti">—</div>
-        <div class="stat-label">Da giocare</div>
-    </div>
-    <div class="stat-item">
-        <div class="stat-value" id="statFase">—</div>
-        <div class="stat-label">Round attuale</div>
-    </div>
-</div>
-
 <!-- MAIN -->
-<div class="cal-wrapper">
-
-    <!-- TAB BAR -->
-    <div class="tab-bar" id="tabBar" style="display:none">
-        <button class="tab-btn active" data-tab="tutti">Tutte le partite</button>
-        <button class="tab-btn" data-tab="risultati">Risultati</button>
-        <button class="tab-btn" data-tab="prossime">Da giocare</button>
-    </div>
-
-    <!-- CONTENUTO -->
-    <div id="calContent">
+<div class="cla-wrapper">
+    <div id="claContent">
         <div class="empty-state">
-            <div class="empty-icon">📅</div>
+            <div class="empty-icon">⏳</div>
             <h2>Caricamento in corso…</h2>
-            <p>Recupero le partite del torneo.</p>
+            <p>Recupero i dati del torneo.</p>
         </div>
     </div>
-
 </div>
 
 <div class="toast" id="toast"></div>
@@ -109,7 +76,7 @@
 
 <script src="../condivisi/darkmode.js"></script>
 <script src="../check_admin.js"></script>
-<script src="calendario.js"></script>
+<script src="classifica.js"></script>
 <script>
     const hamburger = document.getElementById('hamburger');
     const navLinks  = document.getElementById('navLinks');

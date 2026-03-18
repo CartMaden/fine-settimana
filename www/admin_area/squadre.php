@@ -29,6 +29,7 @@ if (!isset($_SESSION['admin_loggato']) || $_SESSION['admin_loggato'] !== true) {
     <nav>
         <a href="../info/info.html">Info</a>
         <a href="../calendario/calendario.html">Calendario</a>
+        <a href="../classifica/classifica.html">Classifica</a>
         <a href="../news/news.html">News</a>
         <a href="../live/live.html">Live</a>
         <a href="../iscrizione/iscrizione.html">partecipa</a>
