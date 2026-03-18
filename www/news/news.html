@@ -199,7 +199,7 @@
   <div class="footer-right">
     <p><a href="tel:+393281693209">&#9742; Ivan He &mdash; +39 328 169 3209</a></p>
     <p><a href="tel:+393518152561">&#9742; Emanuele Campus &mdash; +39 351 815 2561</a></p>
-    <p><a href="/cdn-cgi/l/email-protection#99f0edeaedf6ebf7fcf6fceae9f6ebedead9fef4f8f0f5b7faf6f4">&#9993; <span class="__cf_email__" data-cfemail="e1889592958e938f848e8492918e939592a1868c80888dcf828e8c">[email&#160;protected]</span></a></p>
+<p><a href="mailto:itstorneoesports@gmail.com">&#9993; itstorneoesports@gmail.com</a></p>
   </div>
 </footer>
 
@@ -232,28 +232,6 @@
 </script>
 <script src="../condivisi/darkmode.js"></script>
 <script src="../check_admin.js"></script>
-<script>
-  const hamburger = document.getElementById('hamburger');
-  const navLinks  = document.getElementById('navLinks');
-  hamburger.addEventListener('click', () => {
-    const open = navLinks.classList.toggle('open');
-    hamburger.classList.toggle('open', open);
-    hamburger.setAttribute('aria-expanded', open);
-  });
-  navLinks.querySelectorAll('a').forEach(a => {
-    a.addEventListener('click', () => {
-      navLinks.classList.remove('open');
-      hamburger.classList.remove('open');
-      hamburger.setAttribute('aria-expanded', false);
-    });
-  });
-  document.addEventListener('click', e => {
-    if (!hamburger.contains(e.target) && !navLinks.contains(e.target)) {
-      navLinks.classList.remove('open');
-      hamburger.classList.remove('open');
-      hamburger.setAttribute('aria-expanded', false);
-    }
-  });
-</script>
+
 </body>
 </html>

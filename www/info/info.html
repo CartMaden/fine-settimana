@@ -162,34 +162,11 @@
   <div class="footer-right">
     <p><a href="tel:+393281693209">☎ Ivan He — +39 328 169 3209</a></p>
     <p><a href="tel:+393518152561">☎ Emanuele Campus — +39 351 815 2561</a></p>
-    <p><a href="/cdn-cgi/l/email-protection#80e9f4f3f4eff2eee5efe5f3f0eff2f4f3
-itstorneoesports@gmail.com</a></p>
+    <p><a href="mailto:itstorneoesports@gmail.com">&#9993; itstorneoesports@gmail.com</a></p>
   </div>
 </footer>
 <script src="../condivisi/darkmode.js"></script>
 <script src="../check_admin.js"></script>
-<script>
-  const hamburger = document.getElementById('hamburger');
-  const navLinks  = document.getElementById('navLinks');
-  hamburger.addEventListener('click', () => {
-    const open = navLinks.classList.toggle('open');
-    hamburger.classList.toggle('open', open);
-    hamburger.setAttribute('aria-expanded', open);
-  });
-  navLinks.querySelectorAll('a').forEach(a => {
-    a.addEventListener('click', () => {
-      navLinks.classList.remove('open');
-      hamburger.classList.remove('open');
-      hamburger.setAttribute('aria-expanded', false);
-    });
-  });
-  document.addEventListener('click', e => {
-    if (!hamburger.contains(e.target) && !navLinks.contains(e.target)) {
-      navLinks.classList.remove('open');
-      hamburger.classList.remove('open');
-      hamburger.setAttribute('aria-expanded', false);
-    }
-  });
-</script>
+
 </body>
 </html>
