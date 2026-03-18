@@ -18,7 +18,7 @@
         <a href="../calendario/calendario.html">Calendario</a>
         <a href="../news/news.html">News</a>
         <a href="../live/live.html">Live</a>
-        <a href="../merchandise/merchandise.php">Merchandise</a>
+        <a href="../merchandise/merchandise.php">Shop</a>
         <a href="../iscrizione/iscrizione.html">Partecipa</a>
         <a href="../admin_area/login.php" id="linkDashboard" style="display: none;">Dashboard</a>
         <label class="switch" title="Toggle dark mode">
@@ -37,7 +37,7 @@
     <!-- HERO -->
     <div class="merch-hero">
       <div class="merch-hero-eyebrow">ITS Lazio Digital Gaming</div>
-      <h1>Official <span>Merch</span></h1>
+      <h1>OFFICIAL <span>SHOP</span></h1>
       <p>Rappresenta il torneo con stile. Abbigliamento e accessori ufficiali del team.</p>
     </div>
 
