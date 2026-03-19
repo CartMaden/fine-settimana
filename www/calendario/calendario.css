@@ -26,6 +26,15 @@
         rgba(0, 87, 255, .04) 60px, rgba(0, 87, 255, .04) 62px
     );
 }
+.cal-hero::after {
+  content: '';
+  position: absolute;
+  bottom: -2px; left: 0; right: 0;
+  height: 60px;
+  background: #f4f6fa;
+  clip-path: polygon(0 100%, 100% 100%, 100% 0);
+  transition: background 0.3s;
+}
 
 /* Taglio diagonale come info-hero */
 
