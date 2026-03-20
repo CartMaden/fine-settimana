@@ -1,3 +1,28 @@
+// ── PAYMENT ──
+      let activePayment = 'card';
+
+      function switchPayment(method) {
+        activePayment = method;
+        document.querySelectorAll('.pay-tab').forEach(t => t.classList.toggle('active', t.dataset.method === method));
+        document.getElementById('payCard').style.display = method === 'card' ? 'block' : 'none';
+        document.getElementById('payIban').style.display = method === 'iban' ? 'block' : 'none';
+      }
+
+      function formatCardNumber(el) {
+        let v = el.value.replace(/\D/g, '').slice(0, 16);
+        el.value = v.match(/.{1,4}/g)?.join(' ') || v;
+      }
+
+      function formatExpiry(el) {
+        let v = el.value.replace(/\D/g, '').slice(0, 4);
+        if (v.length >= 3) v = v.slice(0,2) + '/' + v.slice(2);
+        el.value = v;
+      }
+
+      function formatIban(el) {
+        let v = el.value.replace(/\s/g, '').toUpperCase().slice(0, 27);
+        el.value = v.match(/.{1,4}/g)?.join(' ') || v;
+      }
 
       // ── PRODUCT CATALOGUE ──
       const products = [
@@ -159,6 +184,8 @@
         document.getElementById('successScreen').classList.remove('visible');
         document.getElementById('checkoutModal').classList.add('open');
         document.body.style.overflow = 'hidden';
+        // Reset payment tab
+        switchPayment('card');
       }
 
       function closeCheckout() {
@@ -189,6 +216,23 @@
           emailEl.style.borderColor = 'var(--brand-red)';
           valid = false;
         }
+
+        // Payment validation
+        if (activePayment === 'card') {
+          const cardName   = document.getElementById('cardName');
+          const cardNumber = document.getElementById('cardNumber');
+          const cardExpiry = document.getElementById('cardExpiry');
+          const cardCvv    = document.getElementById('cardCvv');
+          if (!cardName.value.trim())                              { cardName.style.borderColor   = 'var(--brand-red)'; valid = false; } else cardName.style.borderColor   = '';
+          if (cardNumber.value.replace(/\s/g,'').length !== 16)   { cardNumber.style.borderColor = 'var(--brand-red)'; valid = false; } else cardNumber.style.borderColor = '';
+          if (!/^\d{2}\/\d{2}$/.test(cardExpiry.value))          { cardExpiry.style.borderColor = 'var(--brand-red)'; valid = false; } else cardExpiry.style.borderColor = '';
+          if (cardCvv.value.length < 3)                           { cardCvv.style.borderColor    = 'var(--brand-red)'; valid = false; } else cardCvv.style.borderColor    = '';
+        } else {
+          const senderIban = document.getElementById('senderIban');
+          const raw = senderIban.value.replace(/\s/g,'');
+          if (raw.length < 15 || !/^[A-Z]{2}/.test(raw)) { senderIban.style.borderColor = 'var(--brand-red)'; valid = false; } else senderIban.style.borderColor = '';
+        }
+
         if (!valid) { return; }
 
         // Simulate submission

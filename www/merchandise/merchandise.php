@@ -151,6 +151,53 @@
             <input class="form-input" type="text" id="notes" placeholder="Citofono, istruzioni...">
           </div>
 
+          <br>
+          <!-- Payment -->
+          <p class="modal-section-title">Pagamento</p>
+          <div class="payment-toggle">
+            <button class="pay-tab active" data-method="card" onclick="switchPayment('card')">💳 Carta</button>
+            <button class="pay-tab" data-method="iban" onclick="switchPayment('iban')">🏦 Bonifico IBAN</button>
+          </div>
+
+          <!-- Card Fields -->
+          <div id="payCard">
+            <div class="form-group">
+              <label class="form-label">Titolare Carta *</label>
+              <input class="form-input" type="text" id="cardName" placeholder="Mario Rossi" autocomplete="cc-name">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Numero Carta *</label>
+              <input class="form-input" type="text" id="cardNumber" placeholder="0000 0000 0000 0000" maxlength="19" autocomplete="cc-number" oninput="formatCardNumber(this)">
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Scadenza (MM/AA) *</label>
+                <input class="form-input" type="text" id="cardExpiry" placeholder="MM/AA" maxlength="5" oninput="formatExpiry(this)">
+              </div>
+              <div class="form-group">
+                <label class="form-label">CVV *</label>
+                <input class="form-input" type="text" id="cardCvv" placeholder="123" maxlength="4" oninput="this.value=this.value.replace(/\D/g,'')">
+              </div>
+            </div>
+          </div>
+
+          <!-- IBAN Fields -->
+          <div id="payIban" style="display:none">
+            <div class="iban-info-box">
+              <span class="iban-info-icon">ℹ️</span>
+              <span>Effettua il bonifico all'IBAN indicato. L'ordine sarà confermato alla ricezione del pagamento.</span>
+            </div>
+            <div class="form-group">
+              <label class="form-label">IBAN Beneficiario</label>
+              <div class="iban-display">IT60 X054 2811 1010 0000 0123 456</div>
+              <div class="iban-meta">Intestato a: <strong>ITS Lazio Digital Gaming</strong></div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Il Tuo IBAN (per ricevuta) *</label>
+              <input class="form-input" type="text" id="senderIban" placeholder="IT60 X054 2811 1010 0000 0000 000" maxlength="34" oninput="formatIban(this)">
+            </div>
+          </div>
+
           <button class="submit-btn" onclick="submitOrder()">Conferma Ordine →</button>
         </div>
 
@@ -180,6 +227,7 @@
         <p><a href="mailto:itstorneoesports@gmail.com">&#9993; itstorneoesports@gmail.com</a></p>
       </div>
     </footer>
+
 
 
   </body>
