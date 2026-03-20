@@ -751,6 +751,8 @@ body.dark-mode .edit-feedback.error {
 /* ══════════════════════════════════════════════════════════
    GAME FILTER BAR  (stile ispirato a news.css)
 ══════════════════════════════════════════════════════════ */
+.manImg{ max-width: 20px; display: inline-block; align-items: center; }
+
 .game-filter-bar {
   display: flex;
   gap: 10px;
@@ -761,6 +763,8 @@ body.dark-mode .edit-feedback.error {
 }
 
 .game-filter-btn {
+  display: flex;
+  align-items: center;
   font-family: "Rajdhani", sans-serif;
   font-weight: 700;
   font-size: 14px;
