@@ -55,9 +55,9 @@ if (!isset($_SESSION['admin_loggato']) || $_SESSION['admin_loggato'] !== true) {
     </div>
     <div class="hero-actions">
         <button class="btn btn-outline" id="btnRefresh">↺ Ricarica squadre</button>
-        <button class="btn btn-primary" id="btnNextRound" disabled>⚡ Nuovo Turno</button>
+        <button class="btn btn-primary" id="btnNextRound" disabled>Nuovo Turno</button>
         <button class="btn btn-danger"  id="btnReset" style="display:none">✕ Reset</button>
-        <button class="btn btn-win"     id="btnFinish" style="display:none" disabled>🏆 Concludi Torneo</button>
+        <button class="btn btn-win"     id="btnFinish" style="display:none" disabled>Concludi Torneo</button>
     </div>
 </div>
 
