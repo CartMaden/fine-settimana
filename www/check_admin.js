@@ -6,7 +6,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 const dashboardBtn = document.getElementById("linkDashboard");
                 if (!dashboardBtn) return;
 
-                // Replace the plain link with the full dropdown
+                
                 const dropdown = document.createElement("div");
                 dropdown.className = "nav-dropdown";
                 dropdown.id = "navDropdown";
@@ -20,7 +20,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 dashboardBtn.replaceWith(dropdown);
 
-                // Mobile: toggle dropdown open/closed on click
+                
                 const toggle = dropdown.querySelector(".nav-dropdown-toggle");
                 toggle.addEventListener("click", function (e) {
                     if (window.getComputedStyle(document.getElementById("hamburger")).display !== "none") {
@@ -29,7 +29,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     }
                 });
 
-                // Close when clicking outside
+                
                 document.addEventListener("click", function (e) {
                     if (!dropdown.contains(e.target)) {
                         dropdown.classList.remove("open");

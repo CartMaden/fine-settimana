@@ -111,7 +111,7 @@ if (!isset($_SESSION['admin_loggato']) || $_SESSION['admin_loggato'] !== true) {
 <script src="squadre.js"></script>
 <script src="../condivisi/darkmode.js"></script>
 <script>
-    // Dropdown toggle (click for mobile, hover handled by CSS for desktop)
+    
     (function() {
         var dropdown = document.getElementById('navDropdown');
         if (!dropdown) return;
@@ -119,12 +119,12 @@ if (!isset($_SESSION['admin_loggato']) || $_SESSION['admin_loggato'] !== true) {
         var arrow  = dropdown.querySelector('.dropdown-arrow');
 
         toggle.addEventListener('click', function(e) {
-            // On mobile (hamburger visible), toggle dropdown on click
+            
             if (window.getComputedStyle(document.getElementById('hamburger')).display !== 'none') {
                 e.preventDefault();
                 dropdown.classList.toggle('open');
             }
-            // On desktop, let the link navigate normally
+            
         });
 
         document.addEventListener('click', function(e) {

@@ -1,4 +1,4 @@
-// ── PAYMENT ──
+
       let activePayment = 'card';
 
       function switchPayment(method) {
@@ -24,7 +24,7 @@
         el.value = v.match(/.{1,4}/g)?.join(' ') || v;
       }
 
-      // ── PRODUCT CATALOGUE ──
+      
       const products = [
         { id: 1, name: 'Jersey Ufficiale 2026', tag: 'Abbigliamento', cat: 'abbigliamento', price: 49.99, icon: '👕', badge: 'Nuovo', hasSizes: true, description: 'Maglia tecnica ufficiale del torneo' },
         { id: 2, name: 'Hoodie Team Lazio DG', tag: 'Abbigliamento', cat: 'abbigliamento', price: 64.99, icon: '🧥', badge: null, hasSizes: true, description: 'Felpa con cappuccio premium' },
@@ -40,7 +40,7 @@
         { id: 12, name: 'Bundle Starter', tag: 'Gadget', cat: 'gadget', price: 89.99, icon: '📦', badge: '−20%', hasSizes: false, description: 'Jersey + Cap + Sticker Pack' },
       ];
 
-      // ── BG COLORS PER CATEGORY ──
+      
       const bgColors = {
         abbigliamento: ['#e8f0ff','#fff0f0','#e8fff0'],
         accessori: ['#fff8e8','#f0e8ff','#e8f8ff'],
@@ -50,7 +50,7 @@
       let cart = [];
       let activeFilter = 'all';
 
-      // ── RENDER PRODUCTS ──
+      
       function renderProducts() {
         const grid = document.getElementById('productGrid');
         const filtered = activeFilter === 'all' ? products : products.filter(p => p.cat === activeFilter);
@@ -83,7 +83,7 @@
         });
       }
 
-      // ── FILTER ──
+      
       document.getElementById('filterBar').addEventListener('click', e => {
         const btn = e.target.closest('.filter-btn');
         if (!btn) return;
@@ -93,7 +93,7 @@
         renderProducts();
       });
 
-      // ── ADD TO CART ──
+     
       function addToCart(id) {
         const p = products.find(x => x.id === id);
         let size = null;
@@ -110,14 +110,14 @@
           cart.push({ key, id, name: p.name, price: p.price, icon: p.icon, size, qty: 1 });
         }
         renderCart();
-        // Flash animation on badge
+        
         const badge = document.getElementById('cartBadge');
         badge.classList.remove('cart-flash');
         void badge.offsetWidth;
         badge.classList.add('cart-flash');
       }
 
-      // ── RENDER CART ──
+      
       function renderCart() {
         const container = document.getElementById('cartItems');
         const empty = document.getElementById('cartEmpty');
@@ -167,10 +167,10 @@
         renderCart();
       }
 
-      // ── CHECKOUT ──
+      
       function openCheckout() {
         if (cart.length === 0) return;
-        // Render order summary
+        
         const totalPrice = cart.reduce((s, c) => s + c.price * c.qty, 0);
         const summaryHtml = cart.map(item =>
           `<div class="order-summary-item">
@@ -179,19 +179,19 @@
           </div>`).join('') +
           `<div class="order-summary-total"><span>TOTALE</span><span>€${totalPrice.toFixed(2)}</span></div>`;
         document.getElementById('orderSummary').innerHTML = summaryHtml;
-        // Reset form state
+        
         document.getElementById('checkoutForm').style.display = 'block';
         document.getElementById('successScreen').classList.remove('visible');
         document.getElementById('checkoutModal').classList.add('open');
         document.body.style.overflow = 'hidden';
-        // Reset payment tab
+        
         switchPayment('card');
       }
 
       function closeCheckout() {
         document.getElementById('checkoutModal').classList.remove('open');
         document.body.style.overflow = '';
-        // If success, clear cart
+        
         if (document.getElementById('successScreen').classList.contains('visible')) {
           cart = [];
           renderCart();
@@ -210,14 +210,14 @@
             el.style.borderColor = '';
           }
         });
-        // Basic email check
+        
         const emailEl = document.getElementById('email');
         if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailEl.value)) {
           emailEl.style.borderColor = 'var(--brand-red)';
           valid = false;
         }
 
-        // Payment validation
+        
         if (activePayment === 'card') {
           const cardName   = document.getElementById('cardName');
           const cardNumber = document.getElementById('cardNumber');
@@ -235,16 +235,16 @@
 
         if (!valid) { return; }
 
-        // Simulate submission
+        
         document.getElementById('checkoutForm').style.display = 'none';
         document.getElementById('successScreen').classList.add('visible');
       }
 
-      // Close modal on overlay click
+      
       document.getElementById('checkoutModal').addEventListener('click', function(e) {
         if (e.target === this) closeCheckout();
       });
 
-      // ── INIT ──
+      
       renderProducts();
       renderCart();
